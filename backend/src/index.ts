@@ -1,41 +1,50 @@
-// import express from 'express';
-// import { Request, Response } from 'express';
-//
-// const app = express();
-//
-// app.get('/', (req: Request, res: Response) => {
-//     res.send('Application works!');
-// });
-//
-// app.listen(3000, () => {
-//     console.log('Application restarted');
-// });
+// npm install @apollo/server express graphql cors body-parser
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import { loadFilesSync } from "@graphql-tools/load-files";
+import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 
-import express from 'express'
-import { graphqlHTTP } from 'express-graphql'
-import { buildSchema } from 'graphql'
+import { resolvers } from './graphql/resolvers'
 
-// Construct a schema, using GraphQL schema language
-const schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`);
+import {makeExecutableSchema} from "@graphql-tools/schema";
+import * as path from "path";
 
-// The root provides a resolver function for each API endpoint
-const root = {
-    hello: () => {
-        return 'Hello world!';
-    },
-};
+// const typesArray = loadFilesSync('graphql', { extensions: ['graphql'] })
+const buildDir = path.join(process.cwd(), 'build')
+console.log(`build directory: ${buildDir}`)
 
+const typesDir = path.join(buildDir, 'graphql', 'types')
+console.log(`types directory: ${typesDir}`)
+
+const typesArray = loadFilesSync(typesDir, { extensions: ['graphql'] })
+const typeDefs = mergeTypeDefs(typesArray)
+const mergedResolvers = mergeResolvers(resolvers)
+
+interface MyContext {
+    token?: String;
+}
 const app = express();
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true,
-}));
+const httpServer = http.createServer(app);
+const server = new ApolloServer<MyContext>({
+    typeDefs,
+    resolvers: mergedResolvers,
+    plugins: [ ApolloServerPluginDrainHttpServer({ httpServer }) ],
+});
 
-app.listen(4000, () => {
-    console.log('Running a GraphQL API server at http://localhost:4000/graphql');
-})
+await server.start();
+app.use(
+    '/',
+    cors<cors.CorsRequest>(),
+    bodyParser.json(),
+    expressMiddleware(server, {
+        context: async ({ req }) => ({ token: req.headers.token }),
+    }),
+);
+
+await new Promise<void>((resolve) => httpServer.listen({ port: 4000 }, resolve));
+console.log(`🚀 Server ready at http://localhost:4000/`);

@@ -15,7 +15,7 @@ import {makeExecutableSchema} from "@graphql-tools/schema";
 import * as path from "path";
 
 // const typesArray = loadFilesSync('graphql', { extensions: ['graphql'] })
-const buildDir = path.join(process.cwd(), 'build')
+const buildDir = path.join(process.cwd(), 'dist')
 console.log(`build directory: ${buildDir}`)
 
 const typesDir = path.join(buildDir, 'graphql', 'types')

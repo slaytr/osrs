@@ -9,4 +9,4 @@ services:
       - "4566:4566"
       - "8080:8080"
     volumes:
-      - ./lambdas:/tmp/localstack/lambdas
+      - ./serverless:/tmp/localstack/serverless

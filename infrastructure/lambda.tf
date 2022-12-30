@@ -2,14 +2,14 @@ resource "aws_iam_policy" "osrs_dynamodb_policy" {
   name = "osrs-dynamodb-policy"
 
   policy = jsonencode({
-    "Version" : "",
+    "Version" : "2012-10-17",
     "Statement" : [
       {
         "Effect" : "Allow",
         "Action" : [
           "dynamodb:*"
         ],
-        "Resource" : aws_dynamodb_table.osrs_users
+        "Resource" : aws_dynamodb_table.osrs_users.arn
       }
     ]
   })

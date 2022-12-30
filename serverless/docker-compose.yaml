@@ -1,0 +1,12 @@
+version: '3'
+services:
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=lambda,dynamodb
+      - DATA_DIR=/tmp/localstack/data
+    ports:
+      - "4566:4566"
+      - "8080:8080"
+    volumes:
+      - ./lambdas:/tmp/localstack/lambdas

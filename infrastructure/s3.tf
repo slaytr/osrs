@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "osrs_lambdas" {
-  bucket = "osrs_lambdas"
+  bucket = "osrs-lambdas"
 
   tags = {
     project = "osrs"

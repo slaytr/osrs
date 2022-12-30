@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "compile": "zip -r versions/highscore-to-db.zip dist"
+    "compile": "zip -r -j versions/highscore-to-db.zip dist/*",
+    "compile-dev": "npm run compile && aws s3 cp versions/highscore-to-db.zip s3://osrs-lambdas --endpoint-url http://localhost:4566 --region ap-southeast-2"
   },
   "author": "Bill Li",
   "license": "ISC",

@@ -4,7 +4,8 @@
   "description": "highscore to dynamodb",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "compile": "zip -r versions/highscore-to-db.zip dist"
   },
   "author": "Bill Li",
   "license": "ISC",

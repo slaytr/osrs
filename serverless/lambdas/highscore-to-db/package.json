@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "compile": "zip -r -j versions/highscore-to-db.zip dist/*",
-    "compile-dev": "npm run compile && aws s3 cp versions/highscore-to-db.zip s3://osrs-lambdas --endpoint-url http://localhost:4566 --region ap-southeast-2"
+    "compile-dev": "npm run compile && aws s3 cp versions/highscore-to-db.zip s3://osrs-lambdas --endpoint-url http://localhost:4566 --region ap-southeast-2",
+    "invoke-reference": "awslocal lambda invoke --function-name osrs-highscore-to-db tmp.log --region ap-southeast-2",
   },
   "author": "Bill Li",
   "license": "ISC",
